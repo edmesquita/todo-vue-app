@@ -65,7 +65,8 @@
 
 
 <script>
-  import axios from 'axios'
+  import axios from 'axios';
+
 
   export default {
     data: () => ({
@@ -113,19 +114,15 @@
 
     methods: {
       debug() {
-        
-        axios.get('http://todo-api.marcmes/api/tasks')
+
+        axios.get(this.getUrl('tasks'))
             .then(response => {
-                // eslint-disable-next-line 
-                console.log(response)
-                // eslint-disable-next-line 
-                
                 
                 this.tasks = response.data.data
             })
       },
       initialize () {
-        
+          
           this.debug()
 
       },
@@ -138,7 +135,14 @@
 
       deleteItem (item) {
         const index = this.tasks.indexOf(item)
-        confirm('Are you sure you want to delete this item?') && this.tasks.splice(index, 1)
+         /* eslint-disable */ 
+        
+        
+        
+        confirm('Are you sure you want to delete this item?') && this.tasks.splice(index, 1) &&
+        axios.delete(this.getUrl(`tasks\\${item.id}`))
+            .then(() => alert('Task deleted.'))
+
       },
 
       close () {
@@ -156,6 +160,11 @@
           this.tasks.push(this.editedItem)
         }
         this.close()
+      },
+
+      getUrl(uri) {
+
+        return process.env.VUE_APP_ROOT_API + uri;
       }
     }
   }
