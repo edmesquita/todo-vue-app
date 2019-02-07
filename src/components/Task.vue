@@ -123,7 +123,11 @@
       },
       initialize () {
           
-          this.debug()
+        axios.get(this.getUrl('tasks'))
+            .then(response => {
+                
+                this.tasks = response.data.data
+            })
 
       },
 
@@ -156,8 +160,24 @@
       save () {
         if (this.editedIndex > -1) {
           Object.assign(this.tasks[this.editedIndex], this.editedItem)
+          
+          let data = {'title' : this.editedItem.title}
+
+          axios.put(this.getUrl(`tasks/${this.editedItem.id}`), data)
+
+          .then(response => console.log(response.data))
+
+          .catch(error => console.error(error))      
+
         } else {
           this.tasks.push(this.editedItem)
+
+          axios.post(this.getUrl('tasks'), this.editedItem)
+
+          .then(response => console.log(response))
+
+          .catch(error => console.error(error))
+          
         }
         this.close()
       },
